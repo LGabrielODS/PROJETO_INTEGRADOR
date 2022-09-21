@@ -6,9 +6,10 @@ from tkinter import Tk, StringVar, ttk
 import tkinter.font as tkFont
 from tkinter import messagebox
 from tkinter import filedialog as fd
-from turtle import bgcolor
+from turtle import bgcolor, left, width
 from PIL import Image, ImageTk
-from tkcalendar import Calendar
+from tkcalendar import Calendar, DateEntry
+import tkinter.font as tkFont
 
 #CORES
 
@@ -78,7 +79,7 @@ l_modelo.place(x=130,y=101)
 
 l_cal = Label(framemeio, text="Data de Compra", height= 1, anchor=NW, font=("Ivy 10 bold"), bg=co1, fg=co4)
 l_cal.place(x=10,y=130)
-l_cal = DateEntry(framemeio, width=30,bg='darkblue', fg='white', borderwidth=2, year=2020)
+l_cal = DateEntry(framemeio, width=12,bg='darkblue', fg='white', borderwidth=2, year=2022)
 l_cal.place(x=130,y=131)
 
 l_com = Label(framemeio, text="Valor da Compra", height= 1, anchor=NW, font=("Ivy 10 bold"), bg=co1, fg=co4)
@@ -91,10 +92,108 @@ l_serie.place(x=10,y=190)
 l_serie = Entry(framemeio, width=30, justify='left', relief="solid")
 l_serie.place(x=130,y=191)
 
-l_imagem = Label(framemeio, text="Imagem", height= 1, anchor=NW, font=("Ivy 10 bold"), bg=co1, fg=co4)
-l_imagem.place(x=10,y=220)
-l_imagem = Entry(framemeio, width=30, justify='left', relief="solid")
-l_imagem.place(x=130,y=221)
+#CRIAÇÃO DE BOTÕES
 
+l_carregar = Label(framemeio, text= "Imagem do item", height= 1, anchor=NW,font=("Ivy 10 bold"),bg= co1, fg=co4)
+l_carregar.place(x=10,y=220)
+botao_carregar = Button(framemeio, compound=CENTER, anchor=CENTER, text= "CARREGAR".upper(), width=30, overrelief=RIDGE, font=("Ivy 8"), bg=co1, fg=co4)
+botao_carregar.place(x=130,y=221)
+
+#BOTÃO DE INSERÇÃO
+
+img_add = Image.open('add.png')
+img_add = img_add.resize((20,20))
+img_add = ImageTk.PhotoImage(img_add)
+botao_inserir = Button(framemeio, image=img_add, compound=LEFT, anchor=NW, text="Inserir".upper(), width=95, overrelief=RIDGE, font=("Ivy 8"), bg=co1, fg=co0)
+botao_inserir.place(x=330,y=10)
+
+#BOTÃO DE ATUALIZAÇÃO
+
+img_update = Image.open('update.png')
+img_update = img_add.resize((20,20))
+img_update = ImageTk.PhotoImage(img_update)
+botao_update = Button(framemeio, image=img_update, compound=LEFT, anchor=NW, text="Atualizar".upper(), width=95, overrelief=RIDGE, font=("Ivy 8"), bg=co1, fg=co0)
+botao_update.place(x=330,y=50)
+
+#BOTÃO DE DELETAR
+
+img_delete = Image.open('delete.png')
+img_delete = img_add.resize((20,20))
+img_delete = ImageTk.PhotoImage(img_delete)
+botao_delete = Button(framemeio, image=img_delete, compound=LEFT, anchor=NW, text="Deletar".upper(), width=95, overrelief=RIDGE, font=("Ivy 8"), bg=co1, fg=co0)
+botao_delete.place(x=330,y=90)
+
+#BOTÃO DE VER O ITEM
+
+img_item = Image.open('item.png')
+img_item = img_item.resize((20,20))
+img_item = ImageTk.PhotoImage(img_item)
+botao_item = Button(framemeio, image=img_item, compound=LEFT, anchor=NW, text="Ver Item".upper(), width=95, overrelief=RIDGE, font=('Ivy 8'), bg=co1, fg=co0)
+botao_item.place(x=330,y=221)
+
+#LABELS DE QUANTIDADE TOTAL E VALORES
+
+l_total = Label(framemeio, width=14,height=2,anchor=CENTER,font=('Ivy 17 bold'),bg=co7,fg=co1,relief=FLAT)
+l_total.place(x=450,y=12)
+l_valor_total = Label(framemeio,text="Valor Total de Todos os Itens",anchor=NW,font=('Ivy 10 bold'), bg=co7, fg=co1)
+l_valor_total.place(x=450,y=12)
+
+l_qtd = Label(framemeio,width=10,height=2,anchor=CENTER,font=('Ivy 25 bold'),bg=co7,fg=co1,relief=FLAT)
+l_qtd.place(x=450,y=92)
+l_qtd_itens = Label(framemeio,text="Quantidade Total de Itens",anchor=NW,font=('Ivy 10 bold'), bg=co7, fg=co1)
+l_qtd_itens.place(x=450,y=92)
+
+#Criando TableView
+def mostrar():
+    tabela_head= ['Item', 'Nome', 'Sala/Área', 'Descrição', 'Marca/Modelo', 'Data da Compra', 'Valor da Compra', 'Número da Série']
+
+    lista_itens = []
+
+    global tree
+
+    tree = ttk.Treeview(framebaixo, selectmode="extended", columns= tabela_head, show= "headings")
+
+#Criando Scrollbar Vertical
+
+vsb = ttk.Scrollbar(framebaixo, orient="vertical", command=tree.yview)
+
+#Criando Scrollbar Horizontal
+
+hsb = ttk.Scrollbar(framebaixo, orient="horizontal", command=tree.yview)
+
+#Configurando a Tree
+
+tree.configure(yscrollcommand=vsb.set,xscrollcommand=hsb.set)
+
+tree.grid(column=0, row=0, sticky='nsew')
+vsb.grid(column=1, row=0, sticky='ns')
+hsb.grid(column=0, row=1, sticky='ew')
+framemeio.grid_rowconfigure(0, weight=12)
+
+hd=["center","center","center","center","center","center","center","center"]
+h=[40,150,100,160,130,100,100,100]
+
+n=0
+
+for col in tabela_head:
+tree.heading(col, text=col.title(), anchor=CENTER)
+tree.column(col, width=h[n], anchor=hd[n])
+
+n+=1
+
+for item in lista_itens:
+    tree.insert('','end', values=item)
+
+quantidade = []
+for item in lista_itens:
+    quantidade.append(item[6])
+
+Total_valor = sum(quantidade)
+Total_itens = sum(quantidade)
+
+l_total['text'] = 'R$ {:,.2f}'.format(Total_valor)
+l_qtd[]
+
+mostrar()
 
 janela.mainloop()
