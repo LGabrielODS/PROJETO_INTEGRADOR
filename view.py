@@ -9,8 +9,7 @@ con = lite.connect('dados.db')
 def inserir_form(i):
     with con:
         cur = con.cursor()
-        query = "INSERT INTO INVENTARIO (NOME, LOCAL, DESCRICAO, MARCA, DATA_DA_COMPRA, VALOR_DA_COMPRA, SERIE, IMAGEM)" \ 
-                "VALUES (?,?,?,?,?,?,?,?)"
+        query = "INSERT INTO INVENTARIO (NOME, LOCAL, DESCRICAO, MARCA, DATA_DA_COMPRA, VALOR_DA_COMPRA, SERIE, IMAGEM) VALUES (?,?,?,?,?,?,?,?)"
         cur.execute(query.i)
 
 #Função para deletar um registro/linha/tupla
@@ -45,7 +44,7 @@ def visualizar_form(v):
         cur = con.cursor()
         cur.execute("SELECT * INTO INVENTARIO WHERE ID=?", (id))
         rows = cur.fetchall()
-        for row is rows:
+        for row in rows:
             lista_itens.append(row)
     return lista_itens
 
